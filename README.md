@@ -1,4 +1,4 @@
-korisnicki nalozi:
+#korisnicki nalozi:
 admin: admin
 marko: marko
 jovana: jovana
