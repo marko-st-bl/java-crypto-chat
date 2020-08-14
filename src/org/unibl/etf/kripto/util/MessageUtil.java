@@ -30,7 +30,7 @@ public class MessageUtil {
 						byte[] encryptedMessage = BouncyCastleCrypto.encryptData(signedMessage,
 								Cert.getUserCertificate(receiver), encryptionAlg);
 						String messagePath = PROPS.getProperty("inbox.path") + File.separator + receiver
-								+ File.separator + new Date().getTime() + ".txt";
+								+ File.separator + new Date().getTime();
 						Path path = Paths.get(messagePath);
 						try {
 							Files.write(path, encryptedMessage);
