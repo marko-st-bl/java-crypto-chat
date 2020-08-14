@@ -3,6 +3,10 @@ package org.unibl.etf.kripto.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -11,6 +15,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.cms.ContentInfo;
@@ -34,6 +46,7 @@ import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipient;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
+import org.bouncycastle.crypto.prng.EntropySourceProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.OutputEncryptor;
@@ -169,5 +182,63 @@ public class BouncyCastleCrypto {
 			e.printStackTrace();
 		}
 		return retVal;
+	}
+	
+	public static SecretKey defineKeyForAES(byte[] keyBytes) {
+		if(keyBytes.length != 16 && keyBytes.length != 24 && keyBytes.length != 32) {
+			throw new IllegalArgumentException("keyBytes wrong length for AES key");
+		}
+		return new SecretKeySpec(keyBytes, "AES");
+	}
+	
+	public static byte[][] aescbcEncrypt(SecretKey key, byte[] data) {
+		try {
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, key);
+			return new byte[][] { cipher.getIV(), cipher.doFinal(data) };
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+	
+	public static byte[] aescbcDecryption(SecretKey key, byte[] iv, byte[] cipherText) {
+		Cipher cipher;
+		try {
+			cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+			 return cipher.doFinal(cipherText);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			e.printStackTrace();
+		} 
+		 return null;
+	}
+
+	
+	public static void main(String[] args) {
+		String secretMessage = "Tajna poruka";
+		String key = "sigurnost1234567";
+		//System.out.println(key.getBytes().length);
+		byte [][] enc = aescbcEncrypt(defineKeyForAES(key.getBytes()), secretMessage.getBytes());
+		System.out.println(new String(enc[1]));
+		System.out.println(new String(aescbcDecryption(defineKeyForAES(key.getBytes()), enc[0], enc[1])));
 	}
 }
