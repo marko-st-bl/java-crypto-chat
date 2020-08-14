@@ -11,7 +11,6 @@ import java.util.Properties;
 public class PropertiesUtil {
 	
 	private static final String CONFIG="conf"+File.separator+"config.properties";
-	//private static final Logger LOGGER=Logger.getLogger(PropertiesUtil.class.getName());
 	
 	public static Properties loadProperties() {
 		Properties prop = new Properties();
@@ -23,7 +22,6 @@ public class PropertiesUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//LOGGER.config("Properties loaded.");
 		return prop;
 	}
 	public static void setNotificationNumber(int id) {
