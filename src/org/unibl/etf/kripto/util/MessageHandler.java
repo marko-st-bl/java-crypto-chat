@@ -24,7 +24,7 @@ public class MessageHandler {
 					response = Protocol.SESSION_DECLINED + Protocol.SEPARATOR + Main.USER.getUsername();
 				}
 			}
-			MessageUtil.sendMessage(response, messageFrom, "AES128", "SHA256");
+			MessageUtil.sendMessage(response, messageFrom, Encryption.AES128.toString(), Hash.SHA256.toString());
 			
 		} else if (message.startsWith(Protocol.SESSION_DECLINED)) {
 			String user = message.split(Protocol.SEPARATOR)[1];
@@ -42,6 +42,7 @@ public class MessageHandler {
 		} else if(message.startsWith(Protocol.END_SESSION)) {
 			if(null != Main.SESSION && Main.SESSION.getUser().equals(message.split(Protocol.SEPARATOR)[1])) {
 				Main.SESSION.setActive(false);
+				Main.SESSION.disableSendButton();
 				JOptionPane.showMessageDialog(null, "User: " + message.split(Protocol.SEPARATOR)[1] + " left session.");
 			} 
 		} else if(message.startsWith(Protocol.FIRST_MESSAGE)) {
@@ -66,6 +67,7 @@ public class MessageHandler {
 				String messageLine = messageParams[0] + ": " + messageParams[1] + "\n";
 				Main.SESSION.getTextArea().append(messageLine);
 				Main.SESSION.isActive = false;
+				Main.SESSION.disableSendButton();
 			}
 		} else {
 			JOptionPane.showMessageDialog(null, "Protcol error.", "Error", JOptionPane.ERROR_MESSAGE);

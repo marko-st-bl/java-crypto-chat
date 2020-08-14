@@ -1,6 +1,5 @@
 package org.unibl.etf.kripto.view;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -24,9 +23,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Properties;
@@ -42,6 +38,7 @@ public class Session extends JFrame {
 	private JTextArea textAreaMessages;
 	private JCheckBox chckbxLastMessage;
 	private JFileChooser imageChooser;
+	private JButton btnSend;
 
 	public String user;
 	public boolean isActive;
@@ -92,7 +89,7 @@ public class Session extends JFrame {
 		lblEncryption.setBounds(12, 492, 74, 16);
 		contentPane.add(lblEncryption);
 
-		JComboBox comboBoxEncryption = new JComboBox();
+		JComboBox<String> comboBoxEncryption = new JComboBox<>();
 		comboBoxEncryption.setModel(new DefaultComboBoxModel(Encryption.values()));
 		comboBoxEncryption.setBounds(12, 518, 86, 22);
 		contentPane.add(comboBoxEncryption);
@@ -101,12 +98,12 @@ public class Session extends JFrame {
 		lblHash.setBounds(134, 492, 56, 16);
 		contentPane.add(lblHash);
 
-		JComboBox comboBoxHash = new JComboBox();
+		JComboBox<String> comboBoxHash = new JComboBox<>();
 		comboBoxHash.setModel(new DefaultComboBoxModel(Hash.values()));
 		comboBoxHash.setBounds(134, 518, 86, 22);
 		contentPane.add(comboBoxHash);
 
-		JButton btnSend = new JButton("SEND");
+		btnSend = new JButton("SEND");
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String encryptionAlg = comboBoxEncryption.getSelectedItem().toString();
@@ -185,6 +182,10 @@ public class Session extends JFrame {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	
+	public void disableSendButton() {
+		btnSend.setEnabled(false);
 	}
 
 }
