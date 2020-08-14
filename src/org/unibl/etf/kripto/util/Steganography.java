@@ -17,9 +17,9 @@ public class Steganography {
 	}
 
 	public boolean encode(String path, String stegan, byte[] message) {
-		BufferedImage image_orig = getImage(path);
+		BufferedImage imageOriginal = getImage(path);
 
-		BufferedImage image = userSpace(image_orig);
+		BufferedImage image = userSpace(imageOriginal);
 		image = addText(image, message);
 
 		return (setImage(image, new File(stegan), "png"));

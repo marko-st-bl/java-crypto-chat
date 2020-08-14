@@ -149,7 +149,7 @@ public class Main extends JFrame {
 		comboBoxEncryption.setBounds(215, 510, 73, 22);
 		contentPane.add(comboBoxEncryption);
 		
-		comboBoxHash = new JComboBox();
+		comboBoxHash = new JComboBox<>();
 		comboBoxHash.setModel(new DefaultComboBoxModel(Hash.values()));
 		comboBoxHash.setBounds(417, 510, 73, 22);
 		contentPane.add(comboBoxHash);
