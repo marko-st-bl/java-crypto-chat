@@ -96,9 +96,13 @@ public class UserController extends Thread{
                 synchronized(LoginController.obj) {
                 	LoginController.obj.notify();
                 }
+                
+                //log online users
+                String onlineUsersOutput = "Online users:";
                 for(String user:onlineUsers) {
-                	System.out.println(user);
+                	onlineUsersOutput+= " " + user;
                 }
+                System.out.println(onlineUsersOutput);
                 
              // reset key and remove from set if directory no longer accessible
                 boolean valid = key.reset();
