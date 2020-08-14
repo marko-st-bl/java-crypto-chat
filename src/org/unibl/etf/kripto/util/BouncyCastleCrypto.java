@@ -52,9 +52,9 @@ public class BouncyCastleCrypto {
 				cmsEnvelopedDataGenerator.addRecipientInfoGenerator(jceKey);
 				CMSTypedData msg = new CMSProcessableByteArray(data);
 				OutputEncryptor encryptor;
-				if (algorithm.equals("AES128")) {
+				if (algorithm.equals(Encryption.AES128.toString())) {
 					encryptor = new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC).setProvider("BC").build();
-				} else if (algorithm.equals("DES_EDE3")) {
+				} else if (algorithm.equals(Encryption.DES_EDE3.toString())) {
 					encryptor = new JceCMSContentEncryptorBuilder(CMSAlgorithm.DES_EDE3_CBC).setProvider("BC").build();
 				} else {
 					encryptor = new JceCMSContentEncryptorBuilder(CMSAlgorithm.CAMELLIA128_CBC).setProvider("BC")
@@ -97,12 +97,12 @@ public class BouncyCastleCrypto {
 			Store certs = new JcaCertStore(certList);
 			CMSSignedDataGenerator cmsGenerator = new CMSSignedDataGenerator();
 			ContentSigner contentSigner;
-			if (algorithm.equals("SHA256")) {
-				contentSigner = new JcaContentSignerBuilder("SHA256withRSA").build(signingKey);
-			} else if (algorithm.equals("MD5")) {
+			if (algorithm.equals(Hash.SHA256.toString())) {
+				contentSigner = new JcaContentSignerBuilder("RIPEMD256withRSA").build(signingKey);
+			} else if (algorithm.equals(Hash.MD5.toString())) {
 				contentSigner = new JcaContentSignerBuilder("MD5withRSA").build(signingKey);
 			} else {
-				contentSigner = new JcaContentSignerBuilder("RIPEMD256withRSA").build(signingKey);
+				contentSigner = new JcaContentSignerBuilder("SHA256withRSA").build(signingKey);
 			}
 			cmsGenerator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(
 					new JcaDigestCalculatorProviderBuilder().setProvider("BC").build()).build(contentSigner,
