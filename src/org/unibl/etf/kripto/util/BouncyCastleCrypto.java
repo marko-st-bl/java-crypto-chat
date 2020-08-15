@@ -238,16 +238,6 @@ public class BouncyCastleCrypto {
 
 	
 	public static void main(String[] args) {
-		String secretMessage = "Tajna poruka";
-		String key = "sigurnost1234567";
-		//System.out.println(key.getBytes().length);
-		Cert root = new Cert("rootCA");
-		byte [] signed = BouncyCastleCrypto.signData(secretMessage.getBytes(), root.getCertificate(), root.getPrivateKey(), "SHA256");
-		byte [] enc = aesecbEncrypt(defineKeyForAES(key.getBytes()), signed);
-		byte [] dec = aesecbDecryption(defineKeyForAES(key.getBytes()), enc);
-		System.out.println(new String(parseSignedData(dec)));
-		System.out.println(verifSignData(dec));
-		//System.out.println(new String(aesecbDecryption(defineKeyForAES(key.getBytes()), enc)));
-		//System.out.println(new String(enc[0]));
+		
 	}
 }
