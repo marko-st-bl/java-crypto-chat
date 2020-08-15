@@ -22,7 +22,6 @@ import java.security.cert.X509Certificate;
 import java.util.Properties;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import org.unibl.etf.kripto.util.PropertiesUtil;
 
 
@@ -129,12 +128,14 @@ public class Cert {
             certificate.checkValidity();
             return true;
         } catch (CertificateExpiredException e) {
-            //System.out.println("Istekao certifikat");
             return false;
         } catch (CertificateNotYetValidException e) {
-            //System.out.println("Certifikat nije jos validan");
             return false;
         }
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 	
 }
