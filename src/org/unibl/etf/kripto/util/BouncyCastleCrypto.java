@@ -53,6 +53,7 @@ import org.bouncycastle.operator.OutputEncryptor;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.Store;
+import org.unibl.etf.kripto.model.Cert;
 
 public class BouncyCastleCrypto {
 
@@ -191,11 +192,11 @@ public class BouncyCastleCrypto {
 		return new SecretKeySpec(keyBytes, "AES");
 	}
 	
-	public static byte[][] aescbcEncrypt(SecretKey key, byte[] data) {
+	public static byte[] aesecbEncrypt(SecretKey key, byte[] data) {
 		try {
-			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding", "BC");
 			cipher.init(Cipher.ENCRYPT_MODE, key);
-			return new byte[][] { cipher.getIV(), cipher.doFinal(data) };
+			return cipher.doFinal(data);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
@@ -206,15 +207,18 @@ public class BouncyCastleCrypto {
 			e.printStackTrace();
 		} catch (BadPaddingException e) {
 			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} 
 		return null;
 	}
 	
-	public static byte[] aescbcDecryption(SecretKey key, byte[] iv, byte[] cipherText) {
+	public static byte[] aesecbDecryption(SecretKey key, byte[] cipherText) {
 		Cipher cipher;
 		try {
-			cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+			cipher = Cipher.getInstance("AES/ECB/PKCS5Padding", "BC");
+			cipher.init(Cipher.DECRYPT_MODE, key);
 			 return cipher.doFinal(cipherText);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -226,7 +230,7 @@ public class BouncyCastleCrypto {
 			e.printStackTrace();
 		} catch (InvalidKeyException e) {
 			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e) {
+		} catch (NoSuchProviderException e) {
 			e.printStackTrace();
 		} 
 		 return null;
@@ -237,8 +241,13 @@ public class BouncyCastleCrypto {
 		String secretMessage = "Tajna poruka";
 		String key = "sigurnost1234567";
 		//System.out.println(key.getBytes().length);
-		byte [][] enc = aescbcEncrypt(defineKeyForAES(key.getBytes()), secretMessage.getBytes());
-		System.out.println(new String(enc[1]));
-		System.out.println(new String(aescbcDecryption(defineKeyForAES(key.getBytes()), enc[0], enc[1])));
+		Cert root = new Cert("rootCA");
+		byte [] signed = BouncyCastleCrypto.signData(secretMessage.getBytes(), root.getCertificate(), root.getPrivateKey(), "SHA256");
+		byte [] enc = aesecbEncrypt(defineKeyForAES(key.getBytes()), signed);
+		byte [] dec = aesecbDecryption(defineKeyForAES(key.getBytes()), enc);
+		System.out.println(new String(parseSignedData(dec)));
+		System.out.println(verifSignData(dec));
+		//System.out.println(new String(aesecbDecryption(defineKeyForAES(key.getBytes()), enc)));
+		//System.out.println(new String(enc[0]));
 	}
 }
